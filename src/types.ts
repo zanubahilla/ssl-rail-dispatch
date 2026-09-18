@@ -1,4 +1,9 @@
-export type ActiveView = 'topology-command' | 'micro-spatial-gate' | '02-00-am-sandbox';
+export type ActiveView =
+  | 'topology-command'
+  | 'micro-spatial-gate'
+  | '02-00-am-sandbox'
+  | 'schedule-calendar'
+  | 'kanban-board';
 
 export type ScheduleScenario = 'scenario-a' | 'scenario-b' | 'scenario-c';
 

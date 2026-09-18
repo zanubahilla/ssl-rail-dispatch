@@ -14,7 +14,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <aside className="fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-white z-40 flex flex-col border-r border-slate-200 justify-between shadow-sm select-none">
-      <div className="flex flex-col">
+      <div className="flex flex-col overflow-y-auto min-h-0">
         {/* Navigation Desk Header */}
         <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
           <span className="font-mono text-[9px] uppercase tracking-widest text-slate-500 font-semibold">
@@ -139,6 +139,80 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }`}
             >
               Urgent Re-Plan Engine &amp; Trade-Off Matrix
+            </span>
+          </button>
+
+          {/* 04: Schedule Calendar */}
+          <button
+            type="button"
+            onClick={() => onSelectView('schedule-calendar')}
+            className={`flex flex-col px-4 py-3 text-left transition-all border-l-2 cursor-pointer group ${
+              activeView === 'schedule-calendar'
+                ? 'bg-sky-50 text-sky-900 border-sky-600 font-bold'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span
+                className={`font-mono text-[11px] tracking-wider uppercase font-semibold ${
+                  activeView === 'schedule-calendar' ? 'text-sky-800 font-bold' : ''
+                }`}
+              >
+                Schedule Calendar
+              </span>
+              <span
+                className={`font-mono text-[9px] font-bold ${
+                  activeView === 'schedule-calendar'
+                    ? 'text-sky-700'
+                    : 'text-slate-400 group-hover:text-sky-700'
+                }`}
+              >
+                04
+              </span>
+            </div>
+            <span
+              className={`text-[11px] leading-tight ${
+                activeView === 'schedule-calendar' ? 'text-slate-700 font-medium' : 'text-slate-500'
+              }`}
+            >
+              Per-Sector Weekly Occupancy
+            </span>
+          </button>
+
+          {/* 05: Kanban Board */}
+          <button
+            type="button"
+            onClick={() => onSelectView('kanban-board')}
+            className={`flex flex-col px-4 py-3 text-left transition-all border-l-2 cursor-pointer group ${
+              activeView === 'kanban-board'
+                ? 'bg-sky-50 text-sky-900 border-sky-600 font-bold'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span
+                className={`font-mono text-[11px] tracking-wider uppercase font-semibold ${
+                  activeView === 'kanban-board' ? 'text-sky-800 font-bold' : ''
+                }`}
+              >
+                Kanban Board
+              </span>
+              <span
+                className={`font-mono text-[9px] font-bold ${
+                  activeView === 'kanban-board'
+                    ? 'text-sky-700'
+                    : 'text-slate-400 group-hover:text-sky-700'
+                }`}
+              >
+                05
+              </span>
+            </div>
+            <span
+              className={`text-[11px] leading-tight ${
+                activeView === 'kanban-board' ? 'text-slate-700 font-medium' : 'text-slate-500'
+              }`}
+            >
+              Every Activity, by Contract &amp; Duration
             </span>
           </button>
         </nav>

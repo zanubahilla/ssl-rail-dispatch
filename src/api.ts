@@ -36,3 +36,72 @@ export async function fetchDashboard(): Promise<DashboardResponse | null> {
     return null;
   }
 }
+
+export interface ScheduleActivity {
+  activity_id: string;
+  contract_number: string;
+  activity_type: string;
+  activity_priority: number;
+  start_location_id: string;
+  end_location_id: string;
+  total_accesses: number;
+  planned_start_week: number;
+  assigned_weeks: number[];
+  eclo_weeks: number[];
+}
+
+export interface ScheduleContract {
+  contract_number: string;
+  description: string;
+  nature_of_activity: string;
+  contract_priority: number;
+  planned_completion_date: string;
+}
+
+export interface ScheduleLocation {
+  location_id: string;
+  location_kind: string;
+  line_code: string;
+  bound: string;
+  supply_capacity: number;
+}
+
+export interface OccupancyEntry {
+  activity_id: string;
+  co_share_group: string;
+}
+
+export interface ScheduleResponse {
+  scenario: 'A' | 'B' | 'C';
+  horizon_weeks: number;
+  activities: ScheduleActivity[];
+  contracts: ScheduleContract[];
+  locations: ScheduleLocation[];
+  occupancy: Record<string, Record<string, OccupancyEntry[]>>;
+}
+
+export async function fetchSchedule(scenario: 'A' | 'B' | 'C'): Promise<ScheduleResponse | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/schedule?scenario=${scenario}`);
+    if (!res.ok) return null;
+    return (await res.json()) as ScheduleResponse;
+  } catch {
+    return null;
+  }
+}
+
+// Calls the real solver (POST /solve) and returns the zip of
+// SCHEDULE_ACCESS.csv / SCHEDULE_OCCUPANCY.csv / RESULTS.csv it produces —
+// the actual submission-format output, not a mock.
+export async function exportScheduleZip(scenario: 'A' | 'B' | 'C'): Promise<Blob | null> {
+  try {
+    const form = new FormData();
+    form.append('scenario', scenario);
+    form.append('use_default', 'true');
+    const res = await fetch(`${API_BASE}/solve`, { method: 'POST', body: form });
+    if (!res.ok) return null;
+    return await res.blob();
+  } catch {
+    return null;
+  }
+}

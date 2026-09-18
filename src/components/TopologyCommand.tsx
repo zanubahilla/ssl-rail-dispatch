@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { QueuedPossession, ActiveView } from '../types';
-import { ACCESS_CSV, OCCUPANCY_CSV, RESULTS_CSV } from '../data/mockData';
 import { SECTION_DOT_ACTIVITIES } from '../data/sectionDotData';
 import { getOperationalTimeline } from '../utils/timeUtils';
+import { exportScheduleZip, ScenarioScore } from '../api';
 import { SectionDotInspector } from './SectionDotInspector';
 
 interface TopologyCommandProps {
   onNavigateToView: (view: ActiveView) => void;
+  scenario: 'A' | 'B' | 'C';
+  scenarioScore: ScenarioScore | null;
   possessions: QueuedPossession[];
   now: Date;
   hh: string;
@@ -21,6 +23,8 @@ interface TopologyCommandProps {
 
 export const TopologyCommand: React.FC<TopologyCommandProps> = ({
   onNavigateToView,
+  scenario,
+  scenarioScore,
   possessions,
   now,
   hh,
@@ -31,7 +35,7 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
   timelineMode,
   onToggleTimelineMode,
 }) => {
-  const [viewMode, setViewMode] = useState<'VECTOR' | 'CIRCUITS' | 'SENSORS' | 'ACTIVITIES'>('ACTIVITIES');
+  const [viewMode, setViewMode] = useState<'CIRCUITS' | 'SENSORS' | 'ACTIVITIES'>('ACTIVITIES');
   const [selectedStation, setSelectedStation] = useState<string | null>(null);
   const [selectedRouteId] = useState<'ALP-EB' | 'ALP-WB' | 'BET-EB' | 'BET-WB' | null>(null);
   const [dispatchState, setDispatchState] = useState<'idle' | 'transmitting' | 'confirmed'>('idle');
@@ -51,8 +55,14 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
   const activeSlices = timelineMode === 'realtime' ? timelineData.slices : nocturnalSlices;
   const activeCursorPct = timelineMode === 'realtime' ? timelineData.cursorPct : 19;
 
-  const handleDownloadCsv = (filename: string, content: string) => {
-    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  // Calls the real solver and downloads the actual SCHEDULE_ACCESS/SCHEDULE_OCCUPANCY/
+  // RESULTS zip it produces for the active scenario — not a canned sample.
+  const handleExportReal = async (filename: string) => {
+    const blob = await exportScheduleZip(scenario);
+    if (!blob) {
+      setDispatchState('idle');
+      return;
+    }
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -65,14 +75,12 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
 
   const handleDispatchAuth = () => {
     setDispatchState('transmitting');
-    setTimeout(() => {
+    handleExportReal(`ps1_results_${scenario}.zip`).finally(() => {
       setDispatchState('confirmed');
-      // Download all manifests
-      handleDownloadCsv('RESULTS_DISPATCH_CONFIRMED.csv', RESULTS_CSV);
       setTimeout(() => {
         setDispatchState('idle');
       }, 3000);
-    }, 1400);
+    });
   };
 
   return (
@@ -112,7 +120,7 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
                 <span className="text-[11px] font-bold tracking-tight">TRACTION ISOLATED: 1 SECTOR</span>
               </div>
               <div className="flex items-center gap-0.5 bg-white border border-slate-300 rounded p-[2px]">
-                {(['ACTIVITIES', 'VECTOR', 'CIRCUITS', 'SENSORS'] as const).map((mode) => (
+                {(['ACTIVITIES', 'CIRCUITS', 'SENSORS'] as const).map((mode) => (
                   <button
                     key={mode}
                     type="button"
@@ -757,7 +765,7 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
             <div className="flex items-center gap-3">
               <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-sky-800 flex items-center gap-1">
                 <span className="material-symbols-outlined text-[16px]">view_timeline</span>
-                OCCUPANCY DISPATCH TIMELINE // SCENARIO C
+                OCCUPANCY DISPATCH TIMELINE // SCENARIO {scenario}
               </span>
               <span className="font-mono text-[9px] text-slate-500 hidden sm:inline">
                 RESOLUTION: 15-MIN BUCKETS • WINDOW: {activeSlices[0]} → {activeSlices[12]} ({timelineMode === 'realtime' ? 'LIVE SYNC' : 'NOCTURNAL'})
@@ -957,9 +965,15 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
               <div className="bg-white border border-slate-200 rounded p-2.5 flex flex-col justify-between shadow-xs">
                 <span className="font-mono text-[9px] text-slate-500 uppercase font-semibold">SOFT PENALTY SCORE</span>
                 <div className="my-1">
-                  <span className="font-mono text-[16px] font-bold text-sky-800 leading-none">18,470.6</span>
+                  <span className="font-mono text-[16px] font-bold text-sky-800 leading-none">
+                    {scenarioScore ? scenarioScore.score.toLocaleString() : '—'}
+                  </span>
                 </div>
-                <span className="font-mono text-[9px] text-amber-700 font-bold">+142.3 vs Baseline</span>
+                <span className="font-mono text-[9px] text-amber-700 font-bold">
+                  {scenarioScore
+                    ? `${scenarioScore.overrun_days_total}d overrun • ${scenarioScore.eclo_nights_total} ECLO`
+                    : 'Backend unreachable'}
+                </span>
               </div>
             </div>
 
@@ -1047,9 +1061,9 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
             <div className="grid grid-cols-3 gap-1.5 font-mono text-[9px]">
               <button
                 type="button"
-                onClick={() => handleDownloadCsv('ACCESS.csv', ACCESS_CSV)}
+                onClick={() => handleExportReal(`ps1_results_${scenario}.zip`)}
                 className="p-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex flex-col text-left transition-colors cursor-pointer"
-                title="Download ACCESS.csv manifest"
+                title={`Runs the real solver for Scenario ${scenario} and downloads its actual output (zip, includes SCHEDULE_ACCESS.csv)`}
               >
                 <span className="text-slate-600 truncate font-semibold">ACCESS.csv</span>
                 <span className="text-emerald-700 font-bold flex items-center gap-0.5">
@@ -1059,9 +1073,9 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
 
               <button
                 type="button"
-                onClick={() => handleDownloadCsv('OCCUPANCY.csv', OCCUPANCY_CSV)}
+                onClick={() => handleExportReal(`ps1_results_${scenario}.zip`)}
                 className="p-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex flex-col text-left transition-colors cursor-pointer"
-                title="Download OCCUPANCY.csv manifest"
+                title={`Runs the real solver for Scenario ${scenario} and downloads its actual output (zip, includes SCHEDULE_OCCUPANCY.csv)`}
               >
                 <span className="text-slate-600 truncate font-semibold">OCCUPANCY.csv</span>
                 <span className="text-emerald-700 font-bold flex items-center gap-0.5">
@@ -1071,9 +1085,9 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
 
               <button
                 type="button"
-                onClick={() => handleDownloadCsv('RESULTS.csv', RESULTS_CSV)}
+                onClick={() => handleExportReal(`ps1_results_${scenario}.zip`)}
                 className="p-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex flex-col text-left transition-colors cursor-pointer"
-                title="Download RESULTS.csv manifest"
+                title={`Runs the real solver for Scenario ${scenario} and downloads its actual output (zip, includes RESULTS.csv)`}
               >
                 <span className="text-slate-600 truncate font-semibold">RESULTS.csv</span>
                 <span className="text-sky-800 font-bold flex items-center gap-0.5">

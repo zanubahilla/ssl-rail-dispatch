@@ -1,14 +1,29 @@
 import { useState, useEffect } from 'react';
 import { ActiveView, ScheduleScenario, PathwayId, QueuedPossession, PathwayOption } from './types';
 import { INITIAL_ALERTS, QUEUED_POSSESSIONS, PATHWAYS } from './data/mockData';
-import { fetchDashboard } from './api';
+import { fetchDashboard, ScenarioScore } from './api';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { TopologyCommand } from './components/TopologyCommand';
 import { MicroSpatialGate } from './components/MicroSpatialGate';
 import { SandboxReplanner } from './components/SandboxReplanner';
+import { ScheduleCalendar } from './components/ScheduleCalendar';
+import { KanbanBoard } from './components/KanbanBoard';
 import { AlertsModal } from './components/AlertsModal';
 import { useRealTime, formatRelativeTimeString } from './utils/timeUtils';
+
+const SCENARIO_TO_LETTER: Record<ScheduleScenario, 'A' | 'B' | 'C'> = {
+  'scenario-a': 'A',
+  'scenario-b': 'B',
+  'scenario-c': 'C',
+};
+const LETTER_TO_SCENARIO: Record<'A' | 'B' | 'C', ScheduleScenario> = {
+  A: 'scenario-a',
+  B: 'scenario-b',
+  C: 'scenario-c',
+};
+const PATHWAY_TO_LETTER: Record<PathwayId, 'A' | 'B' | 'C'> = { alpha: 'A', beta: 'B', gamma: 'C' };
+const LETTER_TO_PATHWAY: Record<'A' | 'B' | 'C', PathwayId> = { A: 'alpha', B: 'beta', C: 'gamma' };
 
 export default function App() {
   const [activeView, setActiveView] = useState<ActiveView>('topology-command');
@@ -29,6 +44,7 @@ export default function App() {
 
   const [possessions, setPossessions] = useState<QueuedPossession[]>(QUEUED_POSSESSIONS);
   const [pathways, setPathways] = useState<PathwayOption[]>(PATHWAYS);
+  const [scenarioScores, setScenarioScores] = useState<Record<'A' | 'B' | 'C', ScenarioScore> | null>(null);
   const [interlockSecured, setInterlockSecured] = useState(true);
   const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false);
 
@@ -37,6 +53,8 @@ export default function App() {
   useEffect(() => {
     fetchDashboard().then((dash) => {
       if (!dash) return;
+
+      setScenarioScores(dash.scenarios);
 
       if (dash.possessions.length > 0) {
         setPossessions(
@@ -76,18 +94,28 @@ export default function App() {
     });
   }, []);
 
+  // Single source of truth for "which scenario is active" — keeps the Header
+  // selector, Sandbox pathway cards, and Schedule Calendar / Kanban Board in sync.
+  const handleSelectScenario = (sc: ScheduleScenario) => {
+    setScenario(sc);
+    setSelectedPathway(LETTER_TO_PATHWAY[SCENARIO_TO_LETTER[sc]]);
+  };
+
+  const handleSelectPathway = (id: PathwayId) => {
+    setSelectedPathway(id);
+    setScenario(LETTER_TO_SCENARIO[PATHWAY_TO_LETTER[id]]);
+  };
+
   const handleVetoTriggered = () => {
     // When spatial veto is triggered in Micro-Spatial Gate, ensure Scenario C is active
     // and note down the mitigation in 02:00 AM Sandbox
-    setScenario('scenario-c');
-    setSelectedPathway('gamma');
+    handleSelectScenario('scenario-c');
     setInterlockSecured(true);
   };
 
   const handleApplyReplanConfirmed = () => {
     // Confirming re-plan re-routes possessions
-    setScenario('scenario-c');
-    setSelectedPathway('gamma');
+    handleSelectScenario('scenario-c');
     // Can auto update alerts or acknowledge
     setAlerts((prev) =>
       prev.map((a) =>
@@ -107,7 +135,7 @@ export default function App() {
       {/* Top Header */}
       <Header
         scenario={scenario}
-        onSelectScenario={setScenario}
+        onSelectScenario={handleSelectScenario}
         alerts={alerts}
         onOpenAlertsModal={() => setIsAlertsModalOpen(true)}
         hh={timeState.hh}
@@ -137,6 +165,8 @@ export default function App() {
           {activeView === 'topology-command' && (
             <TopologyCommand
               onNavigateToView={setActiveView}
+              scenario={SCENARIO_TO_LETTER[scenario]}
+              scenarioScore={scenarioScores?.[SCENARIO_TO_LETTER[scenario]] ?? null}
               possessions={possessions}
               now={timeState.now}
               hh={timeState.hh}
@@ -169,8 +199,22 @@ export default function App() {
             <SandboxReplanner
               pathways={pathways}
               selectedPathway={selectedPathway}
-              onSelectPathway={setSelectedPathway}
+              onSelectPathway={handleSelectPathway}
               onApplyReplanConfirmed={handleApplyReplanConfirmed}
+            />
+          )}
+
+          {activeView === 'schedule-calendar' && (
+            <ScheduleCalendar
+              scenario={SCENARIO_TO_LETTER[scenario]}
+              onScenarioChange={(sc) => handleSelectScenario(LETTER_TO_SCENARIO[sc])}
+            />
+          )}
+
+          {activeView === 'kanban-board' && (
+            <KanbanBoard
+              scenario={SCENARIO_TO_LETTER[scenario]}
+              onScenarioChange={(sc) => handleSelectScenario(LETTER_TO_SCENARIO[sc])}
             />
           )}
         </main>

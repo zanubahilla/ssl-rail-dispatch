@@ -1,0 +1,6 @@
+{
+  "name": "SSL Rail-Dispatch",
+  "description": "Real-time dual-line rail network dispatch, micro-spatial clearance verification, and urgent night possession re-planning console.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

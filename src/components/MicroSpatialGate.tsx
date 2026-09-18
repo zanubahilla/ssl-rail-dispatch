@@ -153,10 +153,10 @@ export const MicroSpatialGate: React.FC<MicroSpatialGateProps> = ({
         </div>
       </div>
 
-      {/* 3-Column High-Density Command Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+      {/* 2-Column Command Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
         {/* Column 1: 3D Volumetric Spatial Clearance & Tunnel Envelope */}
-        <div className="lg:col-span-4 flex flex-col gap-2.5 bg-white p-3.5 border border-slate-200 shadow-xs rounded">
+        <div className="flex flex-col gap-2.5 bg-white p-3.5 border border-slate-200 shadow-xs rounded">
           {/* Section Header */}
           <div className="flex items-center justify-between bg-slate-50 px-3 py-1.5 border border-slate-200 rounded">
             <div className="flex items-center gap-1.5">
@@ -332,172 +332,10 @@ export const MicroSpatialGate: React.FC<MicroSpatialGateProps> = ({
             </p>
           </div>
 
-          {/* Sector CCTV feed */}
-          <div className="relative w-full h-24 bg-slate-900 border border-slate-300 overflow-hidden rounded">
-            <img
-              className="w-full h-full object-cover opacity-85"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWUtf3IC2tQzYvsvm7_3_kXnDxO9xQSxk5uKo6otMgQybBqDYa3Dn5e13YHc30tDD7sxi7OKoylYFdrwhI3Ua8M8kYlvOHWNV1d_vrHlXg5s06l643RkiIn6DbayWwPxzZF5IxdWqhYgnNiRqaJPlCkNIeK8p4DZTJNmoRJU_NWwnPDiexoTJwou5csk7C9ba77IU2JRAdVcM0VL4dnxWOQ_wgQeHy1M1JGyuUKUIuRuLW6WhKv6_L6w"
-              alt="Optical CCTV Feed #C-EB-1204"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-            <div className="absolute bottom-1.5 left-2 flex items-center gap-1 font-mono text-[9px] text-white bg-black/70 px-1.5 py-0.5 rounded">
-              <span className="material-symbols-outlined text-[12px] text-emerald-400">videocam</span>
-              <span>OPTICAL CCTV FEED #C-EB-1204</span>
-            </div>
-          </div>
         </div>
 
-        {/* Column 2: Biological Fatigue & Rest Guard */}
-        <div className="lg:col-span-4 flex flex-col gap-2.5 bg-white p-3.5 border border-slate-200 shadow-xs rounded">
-          {/* Section Header */}
-          <div className="flex items-center justify-between bg-slate-50 px-3 py-1.5 border border-slate-200 rounded">
-            <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-amber-600 text-[16px]">health_and_safety</span>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-slate-800 font-bold">
-                BIOMETRIC REST &amp; FATIGUE // CREW 042
-              </span>
-            </div>
-            <span className="px-1.5 py-[1px] bg-amber-100 text-amber-800 border border-amber-300 font-mono text-[9px] font-bold uppercase rounded">
-              FLAGGED
-            </span>
-          </div>
-
-          {/* Worker Safety Telemetry Card */}
-          <div className="bg-slate-50 p-2.5 flex flex-col gap-2 border border-slate-200 rounded">
-            <div className="flex items-start justify-between">
-              <div>
-                <span className="font-mono text-[9px] uppercase tracking-wider text-slate-500 font-semibold">
-                  SUBCONTRACTOR UNIT
-                </span>
-                <div className="text-[13px] text-slate-900 font-bold">C042 NDT Ultrasonic Rails</div>
-                <div className="font-mono text-[10px] text-sky-800 font-bold">LEAD: Marcus Vance (LTA-C042-88)</div>
-              </div>
-              <div className="flex flex-col items-end">
-                <span className="font-mono text-[9px] text-slate-500 font-semibold">CREW ROSTER</span>
-                <span className="font-mono text-[12px] text-slate-900 font-bold">6 OPERATORS</span>
-              </div>
-            </div>
-
-            {/* Shift & Fatigue Stats */}
-            <div className="grid grid-cols-2 gap-1.5">
-              <div className="bg-white p-2 flex flex-col border border-slate-200 rounded">
-                <span className="font-mono text-[9px] text-slate-500 font-semibold">SHIFT CADENCE</span>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="font-mono text-[16px] text-amber-800 font-bold">3 / 3</span>
-                  <span className="font-mono text-[9px] text-amber-800 uppercase font-bold">CONSECUTIVE</span>
-                </div>
-                <span className="font-mono text-[8px] text-slate-500 mt-0.5">Maximum cap permitted: 3 nights</span>
-              </div>
-
-              <div className="bg-white p-2 flex flex-col border border-slate-200 rounded">
-                <span className="font-mono text-[9px] text-slate-500 font-semibold">ECLO EXPOSURE RATIO</span>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="font-mono text-[16px] text-sky-800 font-bold">1.50x</span>
-                  <span className="font-mono text-[9px] text-slate-500 font-semibold">OCCUPATION</span>
-                </div>
-                <span className="font-mono text-[8px] text-slate-500 mt-0.5">Threshold cap: 1.65x allowable</span>
-              </div>
-            </div>
-
-            {/* Circadian Efficiency Meter Widget */}
-            <div className="bg-white p-2.5 flex flex-col gap-1 border border-slate-200 rounded">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[9px] text-slate-500 uppercase font-bold">
-                  CIRCADIAN EFFICIENCY FACTOR
-                </span>
-                <span className="font-mono text-[11px] text-amber-800 font-bold">0.72x (DEGRADED)</span>
-              </div>
-
-              {/* Linear Gauge Bar with Zones */}
-              <div className="w-full bg-slate-200 h-3 flex overflow-hidden rounded">
-                {/* Critical Zone: 0.0 - 0.6 */}
-                <div className="h-full w-[35%] bg-rose-200 flex items-center justify-end pr-1 border-r border-rose-300">
-                  <span className="font-mono text-[8px] text-rose-800 font-bold">0.60</span>
-                </div>
-                {/* Warning Zone: 0.6 - 0.8 */}
-                <div className="h-full w-[35%] bg-amber-200 flex items-center justify-end pr-1 relative border-r border-amber-300">
-                  <div className="absolute left-[60%] top-0 bottom-0 w-1.5 bg-amber-600 shadow-xs"></div>
-                  <span className="font-mono text-[8px] text-amber-800 font-bold">0.80</span>
-                </div>
-                {/* Optimal Zone: 0.8 - 1.0 */}
-                <div className="h-full w-[30%] bg-emerald-200 flex items-center justify-end pr-1">
-                  <span className="font-mono text-[8px] text-emerald-800 font-bold">1.0</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between font-mono text-[8px] text-slate-500">
-                <span className="text-rose-700 font-semibold">UNSAFE (&lt;0.65)</span>
-                <span className="text-amber-800 font-bold">CURRENT: 0.72</span>
-                <span className="text-emerald-700 font-semibold">OPTIMAL (&gt;0.85)</span>
-              </div>
-            </div>
-
-            {/* Sleep Rest Progress Ring */}
-            <div className="bg-white p-2.5 flex items-center gap-3 border border-slate-200 rounded">
-              <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                  <path
-                    className="text-slate-200"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3.5"
-                  />
-                  <path
-                    className="text-amber-500"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3.5"
-                    strokeDasharray="76, 100"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="font-mono text-[11px] text-slate-900 font-bold">6.1h</span>
-                  <span className="font-mono text-[7px] text-slate-500 font-bold">REST</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col">
-                <span className="text-[11px] text-slate-900 font-bold">Average Rest Window: 6.1 Hours</span>
-                <span className="text-[10px] text-slate-600 mt-0.5">
-                  Measured via telemetric bio-band sync prior to sector sign-on. Min mandated undisturbed rest is 6.0h.
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* High-Visibility Friction Warning Banner */}
-          <div className="bg-amber-50 border border-amber-300 p-3 flex flex-col gap-1 rounded">
-            <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-amber-800 text-[18px]">warning</span>
-              <span className="font-mono text-[10px] text-amber-950 font-bold tracking-wide uppercase">
-                COGNITIVE EXHAUSTION MARGIN TIGHT. FORCED BRIEFING REQUIRED.
-              </span>
-            </div>
-            <p className="text-[11px] text-amber-950 leading-relaxed">
-              Per <span className="font-mono text-sky-800 font-bold">LTA Regulation Sec 14-B</span>: Consecutive night 3 mandates a verified 15-minute micro-spatial briefing prior to electronic track latch unlock.
-            </p>
-            <div className="flex items-center justify-between font-mono text-[9px] text-amber-900 mt-1 pt-1 bg-white/80 border border-amber-200 p-1.5 rounded">
-              <span className="font-semibold">RULE ENFORCEMENT: SEC-14B-2024</span>
-              <span className="font-bold">STATUS: MANDATORY GATE</span>
-            </div>
-          </div>
-
-          {/* Crew Safety Confirmation Check-in */}
-          <div className="bg-slate-50 p-2 flex items-center justify-between border border-slate-200 rounded">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3.5 h-3.5 bg-sky-700 flex items-center justify-center rounded-xs">
-                <div className="w-1.5 h-1.5 bg-white"></div>
-              </div>
-              <span className="text-[11px] text-slate-700 font-semibold">Field Heartbeat Sensor Consensus</span>
-            </div>
-            <span className="font-mono text-[10px] text-emerald-700 font-bold">6/6 ONLINE (100%)</span>
-          </div>
-        </div>
-
-        {/* Column 3: Positive Friction Action Box & Dual Gate Approval */}
-        <div className="lg:col-span-4 flex flex-col gap-2.5 bg-white p-3.5 border border-slate-200 shadow-xs rounded">
+        {/* Column 2: Positive Friction Action Box & Dual Gate Approval */}
+        <div className="flex flex-col gap-2.5 bg-white p-3.5 border border-slate-200 shadow-xs rounded">
           {/* Section Header */}
           <div className="flex items-center justify-between bg-slate-50 px-3 py-1.5 border border-slate-200 rounded">
             <div className="flex items-center gap-1.5">
@@ -669,15 +507,6 @@ export const MicroSpatialGate: React.FC<MicroSpatialGateProps> = ({
                 Decouples slot, auto-logs +1 excess night to Scenario C, releases track to single-consist only
               </span>
             </button>
-          </div>
-
-          {/* Transaction Audit Trail Footer */}
-          <div className="bg-slate-50 p-2 flex items-center justify-between text-slate-500 font-mono text-[9px] border border-slate-200 rounded">
-            <span className="flex items-center gap-1 font-semibold">
-              <span className="material-symbols-outlined text-[12px] text-sky-700">fingerprint</span>
-              LEDGER #TX-991823
-            </span>
-            <span className="text-sky-800 font-bold">BLOCK #891,241 [VERIFIED]</span>
           </div>
         </div>
       </div>

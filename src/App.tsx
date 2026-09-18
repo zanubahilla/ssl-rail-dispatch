@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ActiveView, ScheduleScenario, PathwayId, SubstationFeeder, QueuedPossession, PathwayOption } from './types';
-import { INITIAL_ALERTS, INITIAL_SUBSTATIONS, QUEUED_POSSESSIONS, PATHWAYS } from './data/mockData';
+import { ActiveView, ScheduleScenario, PathwayId, QueuedPossession, PathwayOption } from './types';
+import { INITIAL_ALERTS, QUEUED_POSSESSIONS, PATHWAYS } from './data/mockData';
 import { fetchDashboard } from './api';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
@@ -27,11 +27,9 @@ export default function App() {
     }))
   );
 
-  const [substations, setSubstations] = useState<SubstationFeeder[]>(INITIAL_SUBSTATIONS);
   const [possessions, setPossessions] = useState<QueuedPossession[]>(QUEUED_POSSESSIONS);
   const [pathways, setPathways] = useState<PathwayOption[]>(PATHWAYS);
   const [interlockSecured, setInterlockSecured] = useState(true);
-  const [ledgerBlock, setLedgerBlock] = useState(891241);
   const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false);
 
   // Pull real scheduler output from ps1_solver's FastAPI backend when it's reachable.
@@ -77,32 +75,6 @@ export default function App() {
       );
     });
   }, []);
-
-  // Slowly increment ledger block to give a live distributed consensus feeling
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLedgerBlock((prev) => prev + 1);
-    }, 15000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleToggleSubstation = (id: string) => {
-    setSubstations((prev) =>
-      prev.map((sub) => {
-        if (sub.id === id) {
-          const nextStatus = sub.status === 'TRIPPED' ? 'ENERGIZED' : 'TRIPPED';
-          return {
-            ...sub,
-            status: nextStatus,
-            leakageOrLoad:
-              nextStatus === 'TRIPPED' ? 'LEAKAGE: <0.01 A' : 'LOAD: 1,120 A',
-            voltage: nextStatus === 'TRIPPED' ? '0.00 kV [ISO]' : '750.0 V [NOM]',
-          };
-        }
-        return sub;
-      })
-    );
-  };
 
   const handleVetoTriggered = () => {
     // When spatial veto is triggered in Micro-Spatial Gate, ensure Scenario C is active
@@ -157,7 +129,6 @@ export default function App() {
         activeView={activeView}
         onSelectView={setActiveView}
         interlockSecured={interlockSecured}
-        ledgerBlock={ledgerBlock}
       />
 
       {/* Main Content Area (offset left by 64 = 16rem for sidebar) */}
@@ -166,8 +137,6 @@ export default function App() {
           {activeView === 'topology-command' && (
             <TopologyCommand
               onNavigateToView={setActiveView}
-              substations={substations}
-              onToggleSubstation={handleToggleSubstation}
               possessions={possessions}
               now={timeState.now}
               hh={timeState.hh}

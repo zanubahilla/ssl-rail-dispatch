@@ -171,13 +171,6 @@ export const Header: React.FC<HeaderProps> = ({
               {wrnCount} WRN
             </span>
           </button>
-
-          <div className="hidden lg:flex items-center gap-1 px-2.5 py-1 bg-slate-100 border border-slate-200 rounded font-mono text-[10px] text-slate-600">
-            <span className="text-slate-500 font-medium">GRID-LOAD:</span>
-            <span className="text-emerald-700 font-bold">98.2%</span>
-            <span className="text-slate-500 font-medium ml-1">FEED:</span>
-            <span className="text-sky-700 font-bold">750V DC</span>
-          </div>
         </div>
 
         <div className="h-6 w-[1px] bg-slate-200"></div>

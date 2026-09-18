@@ -58,9 +58,6 @@ export const SandboxReplanner: React.FC<SandboxReplannerProps> = ({
                 <span className="font-mono text-[9px] uppercase tracking-widest text-slate-600 font-semibold">
                   POSSESSION CODE: DEF-S02-S03-WB
                 </span>
-                <span className="font-mono text-[9px] px-1.5 py-[1px] bg-white border border-rose-200 text-emerald-700 font-bold rounded">
-                  SOLVER ACTIVE: DUAL-SIMPLEX
-                </span>
               </div>
               <h1 className="text-[17px] text-rose-950 font-bold tracking-tight mt-0.5">
                 Urgent Re-Plan Engine — Incident: Unscheduled Rail Defect at S02–S03
@@ -468,14 +465,11 @@ export const SandboxReplanner: React.FC<SandboxReplannerProps> = ({
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[11px] font-bold text-slate-900">SSL DUAL-SIMPLEX ENGINE v2.4</span>
+              <span className="font-mono text-[11px] font-bold text-slate-900">Re-plan ready</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              <span className="font-mono text-[9px] text-emerald-700 uppercase font-bold">
-                CONVERGED IN 4,096 STEPS
-              </span>
             </div>
             <span className="text-[11px] text-slate-500">
-              Deterministic proof generated. Interlocking route clearance ready for block broadcast.
+              Route clearance validated, ready for block broadcast.
             </span>
           </div>
         </div>

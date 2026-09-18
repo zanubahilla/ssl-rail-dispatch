@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
-import { SubstationFeeder, QueuedPossession, ActiveView, ActiveConsist } from '../types';
-import { ACCESS_CSV, OCCUPANCY_CSV, RESULTS_CSV, ACTIVE_CONSISTS, ACTIVE_RAILWAY_ROUTES } from '../data/mockData';
+import { QueuedPossession, ActiveView } from '../types';
+import { ACCESS_CSV, OCCUPANCY_CSV, RESULTS_CSV } from '../data/mockData';
 import { SECTION_DOT_ACTIVITIES } from '../data/sectionDotData';
 import { getOperationalTimeline } from '../utils/timeUtils';
-import { RouteActivityPanel } from './RouteActivityPanel';
-import { ConsistDetailModal } from './ConsistDetailModal';
 import { SectionDotInspector } from './SectionDotInspector';
 
 interface TopologyCommandProps {
   onNavigateToView: (view: ActiveView) => void;
-  substations: SubstationFeeder[];
-  onToggleSubstation: (id: string) => void;
   possessions: QueuedPossession[];
   now: Date;
   hh: string;
@@ -25,8 +21,6 @@ interface TopologyCommandProps {
 
 export const TopologyCommand: React.FC<TopologyCommandProps> = ({
   onNavigateToView,
-  substations,
-  onToggleSubstation,
   possessions,
   now,
   hh,
@@ -39,8 +33,7 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
 }) => {
   const [viewMode, setViewMode] = useState<'VECTOR' | 'CIRCUITS' | 'SENSORS' | 'ACTIVITIES'>('ACTIVITIES');
   const [selectedStation, setSelectedStation] = useState<string | null>(null);
-  const [selectedRouteId, setSelectedRouteId] = useState<'ALP-EB' | 'ALP-WB' | 'BET-EB' | 'BET-WB' | null>(null);
-  const [selectedConsist, setSelectedConsist] = useState<ActiveConsist | null>(null);
+  const [selectedRouteId] = useState<'ALP-EB' | 'ALP-WB' | 'BET-EB' | 'BET-WB' | null>(null);
   const [dispatchState, setDispatchState] = useState<'idle' | 'transmitting' | 'confirmed'>('idle');
   const [complianceChecks, setComplianceChecks] = useState({
     workload: true,
@@ -85,9 +78,10 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
   return (
     <div className="flex flex-col w-full gap-4 select-none">
       {/* TOP: INTERACTIVE DUAL-TRACK TOPOLOGY HUD & SCHEMATIC */}
-      <section className="grid grid-cols-1 xl:grid-cols-12 gap-4 w-full">
-        {/* Main Topology Schematic Canvas (9 cols) */}
-        <div className="xl:col-span-9 self-start bg-white border border-slate-200 rounded-lg p-4 flex flex-col gap-2 shadow-xs relative overflow-hidden">
+      <section className="grid grid-cols-1 xl:grid-cols-12 gap-4 w-full items-start">
+        {/* Left Stack: Schematic Canvas + Section Dot Telemetry (9 cols) */}
+        <div className="xl:col-span-9 flex flex-col gap-4">
+        <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col gap-2 shadow-xs relative overflow-hidden">
           {/* Subtle Ambient Gradients */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-sky-600/5 rounded-full blur-3xl pointer-events-none"></div>
           <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-rose-600/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -606,121 +600,6 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
                 </g>
               </g>
 
-              {/* Consist 1: Workgroup b1 (C001+C042) on Line Alpha EB */}
-              <g
-                transform="translate(560, 48)"
-                className="cursor-pointer"
-                onClick={() => setSelectedConsist(ACTIVE_CONSISTS[0])}
-              >
-                <rect
-                  x="0"
-                  y="0"
-                  width="76"
-                  height="26"
-                  rx="4"
-                  fill="#FFFFFF"
-                  stroke={selectedRouteId === 'ALP-EB' ? '#0284C7' : '#DC2626'}
-                  strokeWidth="2"
-                  filter="url(#cyanGlow)"
-                />
-                <circle cx="8" cy="8" r="3" fill="#DC2626" className="animate-ping" />
-                <circle cx="8" cy="8" r="3" fill="#DC2626" />
-                <text x="16" y="11" fill="#006194" fontFamily="JetBrains Mono" fontSize="8" fontWeight="bold">
-                  b1: C001+C042
-                </text>
-                <text x="16" y="21" fill="#DC2626" fontFamily="JetBrains Mono" fontSize="7" fontWeight="bold">
-                  0.0 km/h • 0.00 kV [ISO]
-                </text>
-                <title>Workgroup b1: Ballast Tamping Rig C001 + Ultrasonic NDT C042 (Click for live telemetry)</title>
-              </g>
-
-              {/* Consist 2: Scout Unit TR-402 on Line Alpha WB */}
-              <g
-                transform="translate(230, 98)"
-                className="cursor-pointer"
-                onClick={() => setSelectedConsist(ACTIVE_CONSISTS[1])}
-              >
-                <rect
-                  x="0"
-                  y="0"
-                  width="74"
-                  height="24"
-                  rx="4"
-                  fill="#FFFFFF"
-                  stroke={selectedRouteId === 'ALP-WB' ? '#0284C7' : '#D97706'}
-                  strokeWidth="2"
-                  filter="url(#cyanGlow)"
-                />
-                {/* Westbound forward headlight beam */}
-                <polygon points="0,12 -16,6 -16,18" fill="#FBBF24" opacity="0.4" />
-                <circle cx="8" cy="8" r="2.5" fill="#D97706" className="animate-pulse" />
-                <text x="16" y="10" fill="#0F172A" fontFamily="JetBrains Mono" fontSize="8" fontWeight="bold">
-                  TR-402 SCOUT
-                </text>
-                <text x="16" y="19" fill="#B45309" fontFamily="JetBrains Mono" fontSize="7" fontWeight="bold">
-                  24.8 km/h [TSR 25]
-                </text>
-                <title>Scout TR-402: Clearance Patrol (Click for live telemetry)</title>
-              </g>
-
-              {/* Consist 3: Autonomous Welder C019 on Line Beta EB */}
-              <g
-                transform="translate(710, 204)"
-                className="cursor-pointer"
-                onClick={() => setSelectedConsist(ACTIVE_CONSISTS[2])}
-              >
-                <rect
-                  x="0"
-                  y="0"
-                  width="72"
-                  height="24"
-                  rx="4"
-                  fill="#FFFFFF"
-                  stroke={selectedRouteId === 'BET-EB' ? '#0284C7' : '#D97706'}
-                  strokeWidth="2"
-                  filter="url(#cyanGlow)"
-                />
-                {/* Hot-work spark pulse */}
-                <circle cx="8" cy="8" r="4" fill="#F59E0B" opacity="0.6" className="animate-ping" />
-                <circle cx="8" cy="8" r="2.5" fill="#059669" />
-                <text x="16" y="10" fill="#0F172A" fontFamily="JetBrains Mono" fontSize="8" fontWeight="bold">
-                  C019 WELDER
-                </text>
-                <text x="16" y="19" fill="#D97706" fontFamily="JetBrains Mono" fontSize="7" fontWeight="bold">
-                  0.0 km/h • HOT-WORK
-                </text>
-                <title>Rig C019: Heavy Flash-Butt Rail Welder (Click for live telemetry)</title>
-              </g>
-
-              {/* Consist 4: Revenue Recovery Sweep RV-108 on Line Beta WB */}
-              <g
-                transform="translate(890, 250)"
-                className="cursor-pointer"
-                onClick={() => setSelectedConsist(ACTIVE_CONSISTS[3])}
-              >
-                <rect
-                  x="0"
-                  y="0"
-                  width="74"
-                  height="24"
-                  rx="4"
-                  fill="#FFFFFF"
-                  stroke={selectedRouteId === 'BET-WB' ? '#0284C7' : '#059669'}
-                  strokeWidth="2"
-                  filter="url(#cyanGlow)"
-                />
-                {/* Westbound forward headlight beam */}
-                <polygon points="0,12 -18,6 -18,18" fill="#34D399" opacity="0.4" />
-                <circle cx="8" cy="8" r="2.5" fill="#059669" />
-                <text x="16" y="10" fill="#0F172A" fontFamily="JetBrains Mono" fontSize="8" fontWeight="bold">
-                  RV-108 SWEEP
-                </text>
-                <text x="16" y="19" fill="#059669" fontFamily="JetBrains Mono" fontSize="7" fontWeight="bold">
-                  58.5 km/h • CLEAR
-                </text>
-                <title>Sweep Train RV-108: Revenue Track Circuit Shunt Verification (Click for live telemetry)</title>
-              </g>
-
               {/* Route Activity Overlays when in ACTIVITIES mode */}
               {viewMode === 'ACTIVITIES' && (
                 <g id="activities-overlay">
@@ -822,63 +701,15 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
           </div>
         </div>
 
+        <SectionDotInspector
+          selectedDotId={selectedStation}
+          onSelectDot={(dotId) => setSelectedStation(dotId)}
+          onNavigateToView={onNavigateToView}
+        />
+        </div>
+
         {/* Right Telemetry & Track Access Monitor (3 cols) */}
         <div className="xl:col-span-3 flex flex-col gap-4">
-          {/* High-Voltage Feeder & Clearance Annunciator */}
-          <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-xs flex flex-col gap-2">
-            <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
-              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-600">
-                SUBSTATION FEEDER MATRIX
-              </span>
-              <span className="font-mono text-[9px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-1.5 py-[1px] font-bold">
-                SYNC ACTIVE
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              {substations.map((sub) => (
-                <div
-                  key={sub.id}
-                  onClick={() => onToggleSubstation(sub.id)}
-                  className="p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex items-center justify-between transition-colors cursor-pointer"
-                  title="Click to toggle breaker state"
-                >
-                  <div>
-                    <span className="text-[11px] text-slate-900 font-semibold block">{sub.name}</span>
-                    <span className="font-mono text-[9px] text-slate-500">{sub.cbCode}</span>
-                  </div>
-                  <div className="text-right">
-                    <span
-                      className={`font-mono text-[10px] font-bold px-1.5 py-[1px] border rounded ${
-                        sub.status === 'TRIPPED'
-                          ? 'bg-rose-50 text-rose-700 border-rose-200'
-                          : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      }`}
-                    >
-                      {sub.status === 'TRIPPED' ? 'TRIPPED • OPEN' : 'ENERGIZED'}
-                    </span>
-                    <span className="font-mono text-[9px] text-slate-500 block mt-0.5">
-                      {sub.leakageOrLoad}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Grounding Hook Status Card */}
-            <div className="p-2 bg-slate-100 border border-slate-300 rounded flex items-center gap-2.5 mt-1">
-              <div className="w-8 h-8 rounded bg-rose-100 flex items-center justify-center text-rose-700 shrink-0">
-                <span className="material-symbols-outlined text-[20px]">handyman</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[11px] font-bold text-slate-900">PORTABLE EARTHING CLAMPS</span>
-                <span className="font-mono text-[9px] text-emerald-700 font-bold">
-                  SET AT KM 16.650 &amp; KM 17.920 [VERIFIED]
-                </span>
-              </div>
-            </div>
-          </div>
-
           {/* Sector Possession Queue Ticker */}
           <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-xs flex-1 flex flex-col justify-between">
             <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
@@ -916,35 +747,6 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
           </div>
         </div>
       </section>
-
-      {/* REAL-TIME SECTION DOT ACTIVITY CONSOLE */}
-      <section className="w-full">
-        <SectionDotInspector
-          selectedDotId={selectedStation}
-          onSelectDot={(dotId) => setSelectedStation(dotId)}
-          onNavigateToView={onNavigateToView}
-        />
-      </section>
-
-      {/* REAL-TIME RAILWAY ROUTE ACTIVITY CONSOLE */}
-      <section className="w-full">
-        <RouteActivityPanel
-          routes={ACTIVE_RAILWAY_ROUTES}
-          selectedRouteId={selectedRouteId}
-          onSelectRoute={(id) => setSelectedRouteId(id)}
-          onSelectConsist={(consist) => setSelectedConsist(consist)}
-          onNavigateToView={onNavigateToView}
-        />
-      </section>
-
-      {/* Consist Detail Modal */}
-      {selectedConsist && (
-        <ConsistDetailModal
-          consist={selectedConsist}
-          onClose={() => setSelectedConsist(null)}
-          onNavigateToView={onNavigateToView}
-        />
-      )}
 
       {/* BOTTOM: GANTT POSSESSION TIMELINE & RIGHT DISPATCH VALIDATION PANEL */}
       <section className="grid grid-cols-1 xl:grid-cols-12 gap-4 w-full">
@@ -1139,9 +941,6 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
             <div className="flex items-center justify-between">
               <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-900">
                 PRE-DISPATCH VALIDATOR
-              </span>
-              <span className="px-1.5 py-[2px] bg-emerald-100 border border-emerald-300 text-emerald-800 font-mono text-[9px] font-bold rounded">
-                SOLVER v2.9
               </span>
             </div>
 

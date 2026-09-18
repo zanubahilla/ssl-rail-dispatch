@@ -13,57 +13,6 @@ export interface AlertItem {
   location: string;
 }
 
-export interface SubstationFeeder {
-  id: string;
-  name: string;
-  cbCode: string;
-  lineDesc?: string;
-  status: 'TRIPPED' | 'ENERGIZED';
-  leakageOrLoad: string;
-  voltage: string;
-}
-
-export interface ActiveConsist {
-  id: string;
-  code: string;
-  name: string;
-  type: 'MAINTENANCE_TAMPING' | 'ULTRASONIC_NDT' | 'FLASH_BUTT_WELDER' | 'TEST_PATROL' | 'REVENUE_SWEEP';
-  crewLead: string;
-  crewCount: number;
-  speedKmh: number;
-  speedLimitKmh: number;
-  chainageKm: string;
-  adjacentStation: string;
-  routeId: 'ALP-EB' | 'ALP-WB' | 'BET-EB' | 'BET-WB';
-  tractionVoltage: string;
-  tractionStatus: 'ISOLATED' | 'ENERGIZED';
-  signalAspect: 'RED_STOP' | 'YELLOW_CAUTION' | 'GREEN_PROCEED' | 'AMBER_PULSE';
-  headwayBufferMeters: number;
-  currentTask: string;
-  status: 'STATIONARY_WORK' | 'IN_TRANSIT' | 'CAUTION_CRAWL';
-  coordinates: { x: number; y: number };
-  heading: 'EB' | 'WB';
-}
-
-export interface RailwayRoute {
-  id: 'ALP-EB' | 'ALP-WB' | 'BET-EB' | 'BET-WB';
-  lineId: 'ALP' | 'BET';
-  lineName: string;
-  trackCode: string;
-  direction: 'EASTBOUND' | 'WESTBOUND';
-  color: string;
-  status: 'MAINTENANCE_POSSESSION' | 'SPEED_RESTRICTED' | 'HOT_WORK_WELDING' | 'REVENUE_CLEARANCE';
-  speedLimitKmh: number;
-  nominalSpeedKmh: number;
-  catenaryStatus: string;
-  trackCircuitStatus: 'POSSESSION_LOCKED' | 'CAUTION_SHUNTED' | 'NORMAL_SHUNT' | 'CLEAR_RESERVED';
-  activeConsists: ActiveConsist[];
-  totalDistanceKm: number;
-  activeSector: string;
-  notes: string;
-}
-
-
 export interface QueuedPossession {
   id: string;
   code: string;

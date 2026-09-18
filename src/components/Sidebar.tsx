@@ -5,14 +5,12 @@ interface SidebarProps {
   activeView: ActiveView;
   onSelectView: (view: ActiveView) => void;
   interlockSecured: boolean;
-  ledgerBlock: number;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   activeView,
   onSelectView,
   interlockSecured,
-  ledgerBlock,
 }) => {
   return (
     <aside className="fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-white z-40 flex flex-col border-r border-slate-200 justify-between shadow-sm select-none">
@@ -160,17 +158,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               {interlockSecured ? 'SECURED' : 'UNLOCKED'}
             </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-[9px] text-slate-500 uppercase font-semibold">
-              CONSENSUS LEDGER
-            </span>
-            <span className="font-mono text-[10px] text-sky-700 font-bold">
-              BLOCK #{ledgerBlock.toLocaleString()}
-            </span>
-          </div>
-          <div className="w-full bg-slate-200 h-1.5 mt-1 rounded-full overflow-hidden">
-            <div className="bg-sky-600 h-full w-4/5 rounded-full animate-pulse"></div>
           </div>
         </div>
       </div>

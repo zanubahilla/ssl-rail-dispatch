@@ -89,11 +89,7 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
       <section className="grid grid-cols-1 xl:grid-cols-12 gap-4 w-full items-start">
         {/* Left Stack: Schematic Canvas + Section Dot Telemetry (9 cols) */}
         <div className="xl:col-span-9 flex flex-col gap-4">
-        <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col gap-2 shadow-xs relative overflow-hidden">
-          {/* Subtle Ambient Gradients */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-sky-600/5 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-rose-600/5 rounded-full blur-3xl pointer-events-none"></div>
-
+        <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col gap-2 shadow-xs relative">
           {/* Canvas Header Bar */}
           <div className="flex flex-wrap items-center justify-between gap-2 pb-2 bg-slate-50 border border-slate-200 rounded p-2.5 mb-2">
             <div className="flex items-center gap-3">
@@ -300,7 +296,7 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
                       className="cursor-pointer group"
                       onClick={() => setSelectedStation(st.id)}
                     >
-                      {/* Selection Halo */}
+                      {/* Selection Ring */}
                       {isSelected && (
                         <circle
                           cx={st.cx}
@@ -310,17 +306,7 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
                           stroke="#0284C7"
                           strokeWidth="2.5"
                           strokeDasharray="4 3"
-                          className="animate-spin"
-                          style={{ transformOrigin: `${st.cx}px 93px`, animationDuration: '6s' }}
                         />
-                      )}
-
-                      {/* Live Activity Pulsing Ring */}
-                      {isPossession && (
-                        <circle cx={st.cx} cy="68" r="10" fill="#DC2626" opacity="0.35" className="animate-ping" />
-                      )}
-                      {isApproaching && (
-                        <circle cx={st.cx} cy="118" r="10" fill="#D97706" opacity="0.4" className="animate-ping" />
                       )}
 
                       {/* Station Track Dots */}
@@ -381,7 +367,6 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
                   {selectedStation === 'H01' && (
                     <rect x="490" y="48" width="38" height="90" rx="6" fill="none" stroke="#0284C7" strokeWidth="2.5" strokeDasharray="4 3" />
                   )}
-                  <circle cx="509" cy="68" r="10" fill="#DC2626" opacity="0.4" className="animate-ping" />
                   <rect x="495" y="54" width="28" height="78" rx="4" fill="#FEF2F2" stroke="#DC2626" strokeWidth="2" />
                   <text x="509" y="44" textAnchor="middle" fill="#DC2626" fontFamily="JetBrains Mono" fontSize="10" fontWeight="700">
                     H01
@@ -401,7 +386,6 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
                   {selectedStation === 'H02' && (
                     <rect x="675" y="48" width="38" height="90" rx="6" fill="none" stroke="#0284C7" strokeWidth="2.5" strokeDasharray="4 3" />
                   )}
-                  <circle cx="694" cy="68" r="10" fill="#DC2626" opacity="0.4" className="animate-ping" />
                   <rect x="680" y="54" width="28" height="78" rx="4" fill="#FEF2F2" stroke="#DC2626" strokeWidth="2" />
                   <text x="694" y="44" textAnchor="middle" fill="#DC2626" fontFamily="JetBrains Mono" fontSize="10" fontWeight="700">
                     H02
@@ -494,7 +478,7 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
                       className="cursor-pointer group"
                       onClick={() => setSelectedStation(st.id)}
                     >
-                      {/* Selection Halo */}
+                      {/* Selection Ring */}
                       {isSelected && (
                         <circle
                           cx={st.cx}
@@ -504,17 +488,7 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
                           stroke="#0284C7"
                           strokeWidth="2.5"
                           strokeDasharray="4 3"
-                          className="animate-spin"
-                          style={{ transformOrigin: `${st.cx}px 247px`, animationDuration: '6s' }}
                         />
-                      )}
-
-                      {/* Live Activity Pulsing Ring */}
-                      {isSweep && (
-                        <circle cx={st.cx} cy="270" r="10" fill="#059669" opacity="0.4" className="animate-ping" />
-                      )}
-                      {isHotWork && (
-                        <circle cx={st.cx} cy="224" r="10" fill="#D97706" opacity="0.4" className="animate-ping" />
                       )}
 
                       {/* Station Track Dots */}
@@ -594,7 +568,6 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
                   {selectedStation === 'H02' && (
                     <rect x="675" y="200" width="38" height="90" rx="6" fill="none" stroke="#0284C7" strokeWidth="2.5" strokeDasharray="4 3" />
                   )}
-                  <circle cx="694" cy="224" r="10" fill="#D97706" opacity="0.4" className="animate-ping" />
                   <rect x="680" y="206" width="28" height="78" rx="4" fill="#D97706" stroke="#B45309" strokeWidth="2" />
                   <text x="694" y="300" textAnchor="middle" fill="#D97706" fontFamily="JetBrains Mono" fontSize="10" fontWeight="700">
                     H02
@@ -649,7 +622,6 @@ export const TopologyCommand: React.FC<TopologyCommandProps> = ({
 
               {viewMode === 'SENSORS' && (
                 <g id="sensors-overlay">
-                  <circle cx="360" cy="118" r="8" fill="#DC2626" opacity="0.3" className="animate-ping" />
                   <circle cx="360" cy="118" r="4" fill="#DC2626" />
                   <text x="360" y="104" textAnchor="middle" fill="#DC2626" fontFamily="JetBrains Mono" fontSize="8" fontWeight="bold">
                     DEFECT KM 16.420

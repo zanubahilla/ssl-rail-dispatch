@@ -41,8 +41,7 @@ export const SandboxReplanner: React.FC<SandboxReplannerProps> = ({
   return (
     <div className="flex flex-col w-full gap-4 select-none">
       {/* Incident Telemetry Header / Urgent Banner */}
-      <div className="relative overflow-hidden bg-rose-50 border border-rose-200 p-4 rounded shadow-xs flex flex-col gap-2">
-        <div className="absolute -right-16 -top-16 w-80 h-80 bg-rose-200/40 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="relative bg-rose-50 border border-rose-200 p-4 rounded shadow-xs flex flex-col gap-2">
         <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-rose-600"></div>
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
@@ -138,7 +137,6 @@ export const SandboxReplanner: React.FC<SandboxReplannerProps> = ({
               <line x1="10" y1="44" x2="310" y2="44" stroke="#059669" strokeWidth="2.5" />
               <path d="M70 20 L90 44" stroke="#0284C7" strokeWidth="2" />
               <path d="M210 44 L230 20" stroke="#0284C7" strokeWidth="2" />
-              <circle cx="150" cy="20" r="5" fill="#DC2626" className="animate-ping" />
               <circle cx="150" cy="20" r="4" fill="#DC2626" />
               <text x="15" y="14" fill="#64748B" fontFamily="JetBrains Mono" fontSize="8" fontWeight="600">
                 TRK-A (WB)
